@@ -2,3 +2,4 @@ langchain
 PyPDF2
 python-dotenv
 streamlit
+pydantic==1.10.2
