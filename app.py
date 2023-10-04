@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import streamlit as st
+import time
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -33,9 +34,21 @@ def main():
       )
       chunks = text_splitter.split_text(text)
       
+    # Set the maximum requests per minute to regulate the rate
+      MAX_REQUESTS_PER_MINUTE = 60
+
+      # Calculate the delay (in seconds) between each request
+      REQUEST_DELAY = 60 / MAX_REQUESTS_PER_MINUTE
+    
+      
       # create embeddings
       embeddings = OpenAIEmbeddings()
       knowledge_base = FAISS.from_texts(chunks, embeddings)
+      
+      # Throttle requests to avoid exceeding the rate limit
+      #for chunk in chunks:
+      #    knowledge_base.add_texts([chunk], embeddings)
+          #time.sleep(REQUEST_DELAY)  # Introduce a delay between each reques
       
       # show user input
       user_question = st.text_input("Ask a question about your PDF:")
